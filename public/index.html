@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LocalDrop</title>
+    <link rel="apple-touch-icon" sizes="180x180" href="/favicon/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon/favicon-16x16.png">
+    <link rel="manifest" href="/site.webmanifest">
+    <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+    <meta name="msapplication-TileColor" content="#da532c">
+    <meta name="theme-color" content="#ffffff">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+    <div class="container">
+        <header>
+            <h1>LocalDrop</h1>
+            <p>Share files with anyone on your local network.</p>
+            <div class="transfer-options">
+                <label for="transfer-mode-select">Transfer Mode:</label>
+                <select id="transfer-mode-select">
+                    <option value="webrtc" selected>Default (WebRTC with Relay)</option>
+                    <option value="websocket">Force Relay (WebSocket Only)</option>
+                </select>
+            </div>
+        </header>
+
+        <div id="self-info">
+            <!-- Your info will be populated here by JS -->
+        </div>
+
+        <div id="in-app-notification-container">
+            <!-- Notifications about incoming files will appear here -->
+        </div>
+
+        <main id="peers-container">
+            <!-- Other users on the network will appear here -->
+        </main>
+
+        <footer>
+            <div id="qr-code-container" title="Scan to connect a mobile device"></div>
+            <p>Drag & drop a file onto a user to send.</p>
+        </footer>
+    </div>
+
+    <!-- Peer Template -->
+    <template id="peer-template">
+        <div class="peer">
+            <div class="avatar" draggable="true"></div>
+            <div class="peer-name"></div>
+        </div>
+    </template>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script>
+    <script type="module" src="js/main.js"></script>
+
+</body>
+</html>

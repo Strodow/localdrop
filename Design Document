@@ -1,0 +1,84 @@
+# **Design Document: LocalDrop**
+
+A Local Network Peer-to-Peer File Sharing Application
+
+## **1\. Vision & Principles**
+
+### **1.1. Vision**
+
+To create a free, open-source, and self-hostable web application that enables seamless, drag-and-drop file sharing between devices on the same local network. The project, codenamed "LocalDrop," resurrects the spirit of the original ShareDrop, prioritizing simplicity, privacy, and speed by leveraging modern web technologies like WebRTC.
+
+### **1.2. Core Principles**
+
+* **Simplicity:** No logins, no accounts, no installation. Users open a web page and can immediately see other users and start sharing.  
+* **Local-First:** All file transfers occur directly between peers on the local network. No data ever travels over the public internet.  
+* **Privacy:** Peer identity is ephemeral and randomized. File transfers are encrypted by default (a feature of WebRTC) and require explicit consent from the receiver.  
+* **Zero Configuration:** The user should not need to configure anything. The application should automatically discover other peers.
+
+## **2\. User Experience (UX) Flow**
+
+The user journey is designed to be as intuitive as possible.
+
+1. **Joining the Network:**  
+   * A user (let's call them **User A**) navigates to the LocalDrop URL hosted on the local network (e.g., http://localserver:3000).  
+   * The page loads instantly. User A is assigned a unique, randomly generated identity (e.g., "Clever Fox") and a matching avatar. They are now visible to others.  
+2. **Peer Discovery:**  
+   * Another user (**User B**) on the same WiFi/local network opens the same URL.  
+   * User B is also assigned a unique identity (e.g., "Brave Badger").  
+   * Instantly, User A's interface updates to show User B's avatar and name. Simultaneously, User B's interface shows User A.  
+3. **Initiating a Transfer:**  
+   * User A wants to send a file to User B. They simply drag the file from their desktop and drop it directly onto User B's avatar on the webpage.  
+   * A file selection dialog is also available as an alternative to drag-and-drop.  
+4. **Receiving a Transfer:**  
+   * User B immediately sees a notification appear on their screen. It says, "Clever Fox wants to send you document.pdf (1.5 MB)."  
+   * Two buttons are presented: **Accept** and **Decline**.  
+   * If User B clicks Decline, the transfer is cancelled. User A is notified that the transfer was declined.  
+   * If User B clicks Accept, the file transfer begins.  
+5. **Transfer Progress & Completion:**  
+   * Both users see a progress indicator (e.g., a filling circle or a percentage) over the recipient's avatar, showing the real-time status of the transfer.  
+   * Once the transfer is complete, the file is saved to User B's default "Downloads" folder.  
+   * A "Transfer Complete" notification appears for both users.
+
+## **3\. System Architecture**
+
+The system consists of two main components: the **Client Application** (what the user sees) and a minimal **Signaling Server**.
+
+### **3.1. Client Application (Single-Page App)**
+
+This is the frontend that runs entirely in the user's browser.
+
+* **Framework:** Vanilla JavaScript will be used to keep the application lightweight and dependency-free.  
+* **Rendering:** HTML5 and CSS3 for the structure and a clean, modern UI. The layout will be a responsive grid showing all connected peers.  
+* **Communication:** The core of the application is **WebRTC**.  
+  * RTCPeerConnection: Manages the direct connection to another peer.  
+  * RTCDataChannel: Creates a high-speed, low-latency channel for sending the actual file data directly between browsers once a connection is established.
+
+### **3.2. Signaling Server**
+
+This is a lightweight, necessary backend component that runs on one machine on the network (e.g., a Raspberry Pi, an old laptop, or any user's machine). Its only job is to introduce peers to each other. **It does not handle or see any file data.**
+
+* **Technology:** A simple **WebSocket** server built with Node.js and the ws library.  
+* **Function:**  
+  1. When a new client connects, the server notes their presence and their unique ID.  
+  2. It broadcasts the presence of the new client to all other connected clients.  
+  3. When one client wants to connect to another (to send a file), the signaling server relays the initial WebRTC connection messages (called "offers," "answers," and "ICE candidates") between them.  
+  4. Once these messages are exchanged, the clients have enough information to form a direct P2P connection, and the signaling server is no longer involved in their communication.
+
+## **4\. Key Features (Minimum Viable Product)**
+
+* **Automatic Peer Discovery:** See all other users on the network in real-time.  
+* **Randomized Ephemeral Identity:** Automatically assigned avatar/name pairs for privacy and simplicity.  
+* **Drag-and-Drop Interface:** Intuitive file-sharing initiation.  
+* **Single File Transfers:** Support for sending one file at a time.  
+* **Receiver Consent:** Mandatory Accept/Decline prompt for security.  
+* **Real-time Progress Indicator:** Visual feedback on transfer status.  
+* **Responsive Design:** The UI works seamlessly on both desktop and mobile browsers.
+
+## **5\. Future Enhancements (Post-MVP)**
+
+* **Multi-file Transfer:** Allow dragging and dropping multiple files or an entire folder.  
+* **Text Snippet Sharing:** Add a simple text box to send URLs or snippets of text.  
+* **QR Code Onboarding:** Display a QR code on desktop that mobile users can scan to instantly open the correct URL.  
+* **Web Push Notifications:** Notify a user of an incoming file even if their browser is in the background.  
+* **Transfer History:** A small, session-only log of completed or failed transfers.  
+* **End-to-End Encryption Visibility:** Although WebRTC is encrypted by default (DTLS), add a UI element (like a lock icon) to reassure users of their privacy.
