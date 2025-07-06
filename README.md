@@ -19,14 +19,14 @@ This is the recommended way to run LocalDrop.
 
 1.  **Pull the image from Docker Hub:**
     ```bash
-    docker pull your-dockerhub-username/localdrop:latest
+    docker pull lgilmore/localdrop:latest
     ```
 
 2.  **Run the container:**
     You must provide your computer's Local Area Network (LAN) IP address so it can be displayed in the QR code for other devices to connect.
 
     ```bash
-    docker run --rm -p 3000:3000 -e HOST_IP="YOUR_LAN_IP_HERE" your-dockerhub-username/localdrop:latest
+    docker run --rm -p 3000:3000 -e HOST_IP="YOUR_LAN_IP_HERE" lgilmore/localdrop:latest
     ```
     - Replace `YOUR_LAN_IP_HERE` with your actual IP address (e.g., `192.168.1.52`).
     - **Windows:** Find your IP by running `ipconfig` in Command Prompt.
@@ -46,7 +46,7 @@ If you want to run the application without Docker for development purposes:
 
 1.  **Clone the repository:**
     ```bash
-    git clone https://github.com/your-github-username/localdrop.git
+    git clone https://github.com/strodow/localdrop.git
     cd localdrop
     ```
 
